@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LimpezaPro - Agende Sua Faxina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #0a2647;
+      --primary-light: #144272;
+      --primary-dark: #071b33;
+      --accent: #2d9cdb;
+      --accent-light: #56ccf2;
+      --accent-dark: #1a7ab5;
+      --accent-glow: rgba(45, 156, 219, 0.3);
+      --bg: #f8f9fc;
+      --card-bg: #ffffff;
+      --text: #1a1a2e;
+      --text-light: #6b7280;
+      --text-white: #f0f4f8;
+      --border: #e5e7eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 4px 24px rgba(10, 38, 71, 0.08);
+      --shadow-hover: 0 12px 40px rgba(10, 38, 71, 0.14);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== HEADER / NAV ===== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .header.scrolled {
+      box-shadow: 0 2px 20px rgba(10, 38, 71, 0.1);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .logo i {
+      color: var(--accent);
+      font-size: 1.8rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .btn-nav {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      transition: var(--transition) !important;
+    }
+
+    .btn-nav::after {
+      display: none !important;
+    }
+
+    .btn-nav:hover {
+      background: var(--primary-light) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(10, 38, 71, 0.25);
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .menu-toggle span {
+      width: 26px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+      transition: var(--transition);
+    }
+
+    .menu-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 6px);
+    }
+
+    .menu-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -6px);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 160px 0 100px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, #0d3b66 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(45, 156, 219, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(86, 204, 242, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(10, 38, 71, 0.4) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .hero-content h1 span {
+      color: var(--accent-light);
+      position: relative;
+    }
+
+    .hero-content p {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 36px;
+      max-width: 500px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    .btn-outline-light {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline-light:hover {
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .hero-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-illustration {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(45, 156, 219, 0.08) 0%, transparent 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-illustration .icon-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 280px;
+    }
+
+    .hero-illustration .icon-item {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      color: #fff;
+      transition: var(--transition);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .hero-illustration .icon-item:nth-child(2) { animation-delay: -1s; }
+    .hero-illustration .icon-item:nth-child(3) { animation-delay: -2s; }
+    .hero-illustration .icon-item:nth-child(4) { animation-delay: -3s; }
+
+    .hero-illustration .icon-item i {
+      font-size: 2.2rem;
+      color: var(--accent-light);
+      margin-bottom: 8px;
+    }
+
+    .hero-illustration .icon-item span {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-stats .stat-item {
+      text-align: center;
+    }
+
+    .hero-stats .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .hero-stats .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section {
+      padding: 96px 0;
+    }
+
+    .section-tag {
+      display: inline-block;
+      background: rgba(45, 156, 219, 0.1);
+      color: var(--accent);
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mx-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ===== SERVICES ===== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      transition: var(--transition);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: var(--transition);
+    }
+
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .service-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, rgba(45, 156, 219, 0.1), rgba(86, 204, 242, 0.1));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .service-icon i {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    .service-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .service-card p {
+      font-size: 0.92rem;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .service-price {
+      display: inline-block;
+      margin-top: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      position: relative;
+    }
+
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 48px;
+      left: calc(12.5% + 14px);
+      right: calc(12.5% + 14px);
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      opacity: 0.3;
+    }
+
+    .step-card {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .step-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .step-card p {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials {
+      background: var(--primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .testimonials::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(45, 156, 219, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .testimonials .section-title {
+      color: #fff;
+    }
+
+    .testimonials .section-sub {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: var(--transition);
+    }
+
+    .testimonial-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-4px);
+    }
+
+    .testimonial-stars {
+      color: #f59e0b;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-card blockquote {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .testimonial-author div strong {
+      display: block;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .testimonial-author div span {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* ===== BOOKING FORM ===== */
+    .booking {
+      background: var(--bg);
+    }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .form-info h2 {
+      font-size: 2rem;
+    }
+
+    .form-info .info-items {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-info .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .form-info .info-item i {
+      width: 44px;
+      height: 44px;
+      background: rgba(45, 156, 219, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .form-info .info-item div strong {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--primary);
+    }
+
+    .form-info .info-item div span {
+      font-size: 0.88rem;
+      color: var(--text-light);
+    }
+
+    .form-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .form-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .form-card .form-sub {
+      color: var(--text-light);
+      font-size: 0.92rem;
+      margin-bottom: 28px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .form-group label .required {
+      color: #ef4444;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      background: #fff;
+    }
+
+    .form-group input.error,
+    .form-group select.error,
+    .form-group textarea.error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+
+    .form-group .error-msg {
+      font-size: 0.8rem;
+      color: #ef4444;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-group .error-msg.show {
+      display: block;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .radio-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-submit i {
+      font-size: 1.1rem;
+    }
+
+    .btn-submit .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .btn-submit.loading .spinner {
+      display: inline-block;
+    }
+
+    .btn-submit.loading .btn-text {
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .form-success.show {
+      display: block;
+      animation: fadeUp 0.5s ease;
+    }
+
+    .form-success i {
+      font-size: 3rem;
+      color: var(--success);
+      margin-bottom: 16px;
+    }
+
+    .form-success h3 {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .form-success p {
+      color: var(--text-light);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--primary-dark);
+      color: rgba(255, 255, 255, 0.7);
+      padding: 48px 0 24px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-brand p {
+      font-size: 0.9rem;
+      margin-top: 16px;
+      max-width: 300px;
+      line-height: 1.7;
+    }
+
+    .footer h4 {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .footer ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer ul a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .footer ul a:hover {
+      color: var(--accent-light);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-social a:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .footer-bottom .heart {
+      color: #ef4444;
+    }
+
+    /* ===== SCROLL TOP ===== */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(10, 38, 71, 0.2);
+      transition: var(--transition);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      z-index: 999;
+    }
+
+    .scroll-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-top:hover {
+      background: var(--primary-light);
+      transform: translateY(-3px);
+    }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-content p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+
+      .hero-illustration {
+        display: none;
+      }
+
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .steps-grid::before {
+        display: none;
+      }
+
+      .form-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(16px);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transform: translateY(-110%);
+        transition: var(--transition);
+        box-shadow: 0 8px 32px rgba(10, 38, 71, 0.1);
+      }
+
+      .nav-links.open {
+        transform: translateY(0);
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .hero {
+        padding: 120px 0 60px;
+      }
+
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+
+      .hero-stats {
+        flex-wrap: wrap;
+        gap: 24px;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .form-card {
+        padding: 24px;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .scroll-top {
+        bottom: 16px;
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 1.7rem;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+      }
+
+      .container {
+        padding: 0 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#" class="logo">
+        <i class="fas fa-sparkles"></i>
+        LimpezaPro
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#como-funciona">Como Funciona</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#agendar" class="btn-nav">Agendar</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <h1>Sua casa mais limpa,<br>sua vida mais <span>leve</span></h1>
+        <p>Agende uma faxina profissional com praticidade. Profissionais treinados, materiais de qualidade e agendamento flexível para caber na sua rotina.</p>
+        <div class="hero-buttons">
+          <a href="#agendar" class="btn btn-primary">
+            <i class="fas fa-calendar-check"></i>
+            Agende Agora
+          </a>
+          <a href="#servicos" class="btn btn-outline-light">
+            <i class="fas fa-chevron-down"></i>
+            Ver Serviços
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">+5.000</div>
+            <div class="stat-label">Faxinas realizadas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">98%</div>
+            <div class="stat-label">Clientes satisfeitos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">60 min</div>
+            <div class="stat-label">Tempo médio de resposta</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-illustration">
+          <div class="icon-grid">
+            <div class="icon-item">
+              <i class="fas fa-broom"></i>
+              <span>Limpeza Geral</span>
+            </div>
+            <div class="icon-item">
+              <i class="fas fa-wind"></i>
+              <span>Higienização</span>
+            </div>
+            <div class="icon-item">
+              <i class="fas fa-microchip"></i>
+              <span>Eletrodomésticos</span>
+            </div>
+            <div class="icon-item">
+              <i class="fas fa-leaf"></i>
+              <span>Produtos Ecológicos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section" id="servicos">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-tag">Nossos Serviços</span>
+        <h2 class="section-title">Sua faxina do seu jeito</h2>
+        <p class="section-sub mx-auto">Escolha o plano ideal para sua necessidade. Todos os serviços incluem materiais de limpeza e profissionais treinados.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-home"></i></div>
+          <h3>Limpeza Residencial</h3>
+          <p>Faxina completa para sua casa: quartos, sala, cozinha, banheiros e áreas de convivência. Tudo impecável.</p>
+          <span class="service-price">A partir de R$ 89</span>
+        </div>
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-building"></i></div>
+          <h3>Limpeza Comercial</h3>
+          <p>Para escritórios, lojas e comércios. Ambiente limpo e organizado para receber seus clientes e equipe.</p>
+          <span class="service-price">A partir de R$ 149</span>
+        </div>
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-tools"></i></div>
+          <h3>Limpeza Pós-Obra</h3>
+          <p>Remoção de poeira fina, resíduos de construção e acabamentos. Sua obra pronta para morar.</p>
+          <span class="service-price">A partir de R$ 199</span>
+        </div>
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-star"></i></div>
+          <h3>Limpeza Pesada</h3>
+          <p>Para aquela faxina completa de fim de ano ou após eventos. Forno, geladeira, armários e muito mais.</p>
+          <span class="service-price">A partir de R$ 149</span>
+        </div>
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-couch"></i></div>
+          <h3>Estofados & Tapetes</h3>
+          <p>Higienização profunda de sofás, colchões, cortinas e tapetes com equipamentos profissionais.</p>
+          <span class="service-price">A partir de R$ 79</span>
+        </div>
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-calendar-week"></i></div>
+          <h3>Limpeza Recorrente</h3>
+          <p>Programe faxinas semanais ou quinzenais e ganhe descontos exclusivos. Sua casa sempre limpa.</p>
+          <span class="service-price">A partir de R$ 69/sessão</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="section" id="como-funciona" style="background: #fff;">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-tag">Como Funciona</span>
+        <h2 class="section-title">Agendar é muito fácil</h2>
+        <p class="section-sub mx-auto">Em apenas 4 passos você resolve sua faxina sem sair de casa.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <div class="step-number">1</div>
+          <h3>Escolha o Serviço</h3>
+          <p>Selecione o tipo de limpeza que melhor atende sua necessidade.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-number">2</div>
+          <h3>Agende o Horário</h3>
+          <p>Escolha a data e o período que funciona melhor para você.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-number">3</div>
+          <h3>Receba o Profissional</h3>
+          <p>Nosso time chega no horário com todo o material necessário.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-number">4</div>
+          <h3>Pronto!</h3>
+          <p>Sua casa impecável sem você precisar levantar um dedo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="section testimonials" id="depoimentos">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-tag" style="background: rgba(45,156,219,0.15);">Depoimentos</span>
+        <h2 class="section-title">Quem usa, aprova</h2>
+        <p class="section-sub mx-auto">Veja o que nossos clientes estão falando sobre o serviço.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <blockquote>"Contratei a limpeza pós-obra e ficou perfeito! Tiraram toda a poeira fina, os profissionais foram super educados e cuidadosos. Recomendo de olhos fechados."</blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AM</div>
+            <div>
+              <strong>Ana Martins</strong>
+              <span>Limpeza Pós-Obra</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <blockquote>"Assinei o plano recorrente quinzenal e estou amando. Chegam sempre no horário, trazem os próprios materiais e minha casa vive cheirosa. Melhor custo-benefício!"</blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">CL</div>
+            <div>
+              <strong>Carlos Lima</strong>
+              <span>Limpeza Recorrente</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <blockquote>"Precisei de uma limpeza de escritório com urgência e eles conseguiram me atender no mesmo dia. Ambiente ficou impecável, meus clientes notaram a diferença!"</blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JS</div>
+            <div>
+              <strong>Juliana S. Oliveira</strong>
+              <span>Limpeza Comercial</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOOKING FORM ===== -->
+  <section class="section booking" id="agendar">
+    <div class="container">
+      <div class="form-wrapper">
+        <div class="form-info fade-in">
+          <span class="section-tag">Agende</span>
+          <h2 class="section-title">Solicite seu orçamento</h2>
+          <p class="section-sub">Preencha o formulário e nossa equipe entrará em contato em até 60 minutos para confirmar seu agendamento.</p>
+          <div class="info-items">
+            <div class="info-item">
+              <i class="fas fa-phone-alt"></i>
+              <div>
+                <strong>Telefone</strong>
+                <span>(11) 99999-8888</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-envelope"></i>
+              <div>
+                <strong>Email</strong>
+                <span>contato@limpezapro.com.br</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-clock"></i>
+              <div>
+                <strong>Horário de Atendimento</strong>
+                <span>Seg a Sex: 7h às 20h | Sáb: 8h às 16h</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-shield-alt"></i>
+              <div>
+                <strong>Garantia de Qualidade</strong>
+                <span>Não gostou? Refazemos sem custo adicional.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card fade-in">
+          <div id="formContainer">
+            <h3>Dados do Agendamento</h3>
+            <p class="form-sub">Preencha todos os campos obrigatórios (*)</p>
+
+            <form id="bookingForm" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nome">Nome completo <span class="required">*</span></label>
+                  <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+                  <div class="error-msg" id="nomeError">Por favor, informe seu nome.</div>
+                </div>
+                <div class="form-group">
+                  <label for="telefone">Telefone <span class="required">*</span></label>
+                  <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-8888" required>
+                  <div class="error-msg" id="telefoneError">Informe um telefone válido.</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email">Email <span class="required">*</span></label>
+                  <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                  <div class="error-msg" id="emailError">Informe um email válido.</div>
+                </div>
+                <div class="form-group">
+                  <label for="endereco">Endereço <span class="required">*</span></label>
+                  <input type="text" id="endereco" name="endereco" placeholder="Rua, nº, bairro, cidade" required>
+                  <div class="error-msg" id="enderecoError">Informe seu endereço completo.</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="imovel">Tipo de imóvel <span class="required">*</span></label>
+                  <select id="imovel" name="imovel" required>
+                    <option value="">Selecione...</option>
+                    <option value="casa">Casa</option>
+                    <option value="apartamento">Apartamento</option>
+                    <option value="comercial">Comercial</option>
+                    <option value="outro">Outro</option>
+                  </select>
+                  <div class="error-msg" id="imovelError">Selecione o tipo de imóvel.</div>
+                </div>
+                <div class="form-group">
+                  <label for="servico">Tipo de serviço <span class="required">*</span></label>
+                  <select id="servico" name="servico" required>
+                    <option value="">Selecione...</option>
+                    <option value="residencial">Limpeza Residencial</option>
+                    <option value="comercial">Limpeza Comercial</option>
+                    <option value="pos-obra">Limpeza Pós-Obra</option>
+                    <option value="pesada">Limpeza Pesada</option>
+                    <option value="estofados">Estofados & Tapetes</option>
+                    <option value="recorrente">Limpeza Recorrente</option>
+                  </select>
+                  <div class="error-msg" id="servicoError">Selecione o tipo de serviço.</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="comodos">Quantidade de cômodos <span class="required">*</span></label>
+                  <input type="number" id="comodos" name="comodos" min="1" max="50" placeholder="Ex: 4" required>
+                  <div class="error-msg" id="comodosError">Informe a quantidade de cômodos.</div>
+                </div>
+                <div class="form-group">
+                  <label for="data">Data preferencial <span class="required">*</span></label>
+                  <input type="date" id="data" name="data" required>
+                  <div class="error-msg" id="dataError">Selecione uma data válida (a partir de amanhã).</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Horário preferencial <span class="required">*</span></label>
+                  <div class="radio-group">
+                    <label class="radio-option">
+                      <input type="radio" name="horario" value="manha" checked>
+                      Manhã (7h-12h)
+                    </label>
+                    <label class="radio-option">
+                      <input type="radio" name="horario" value="tarde">
+                      Tarde (12h-18h)
+                    </label>
+                    <label class="radio-option">
+                      <input type="radio" name="horario" value="noite">
+                      Noite (18h-20h)
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Precisa de materiais?</label>
+                  <div class="radio-group">
+                    <label class="radio-option">
+                      <input type="radio" name="materiais" value="sim" checked>
+                      Sim, quero materiais
+                    </label>
+                    <label class="radio-option">
+                      <input type="radio" name="materiais" value="nao">
+                      Já tenho os meus
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group full">
+                <label for="mensagem">Mensagem adicional</label>
+                <textarea id="mensagem" name="mensagem" rows="3" placeholder="Alguma observação? (ex: horário restrito, acesso ao prédio, etc.)"></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit" id="btnSubmit">
+                <span class="btn-text"><i class="fas fa-paper-plane"></i> Solicitar Agendamento</span>
+                <span class="spinner"></span>
+              </button>
+            </form>
+          </div>
+
+          <div class="form-success" id="formSuccess">
+            <i class="fas fa-check-circle"></i>
+            <h3>Solicitação enviada!</h3>
+            <p>Recebemos seu pedido de agendamento. Nossa equipe entrará em contato em até 60 minutos para confirmar o serviço.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo" style="color:#fff;">
+            <i class="fas fa-sparkles" style="color:var(--accent-light);"></i>
+            LimpezaPro
+          </a>
+          <p>Transformamos sua casa em um ambiente mais saudável e agradável. Profissionais treinados e comprometidos com a excelência.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4>Serviços</h4>
+          <ul>
+            <li><a href="#">Limpeza Residencial</a></li>
+            <li><a href="#">Limpeza Comercial</a></li>
+            <li><a href="#">Limpeza Pós-Obra</a></li>
+            <li><a href="#">Limpeza Pesada</a></li>
+            <li><a href="#">Estofados & Tapetes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="#">Sobre Nós</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Trabalhe Conosco</a></li>
+            <li><a href="#">Política de Privacidade</a></li>
+            <li><a href="#">Termos de Uso</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Suporte</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Central de Ajuda</a></li>
+            <li><a href="#">Reclamações</a></li>
+            <li><a href="#">Código de Defesa</a></li>
+            <li><a href="#">Fale Conosco</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 LimpezaPro. Todos os direitos reservados. Feito com <span class="heart">&hearts;</span> para sua casa.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCROLL TO TOP ===== -->
+  <button class="scroll-top" id="scrollTop" aria-label="Voltar ao topo">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      /* === MOBILE MENU === */
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+
+      menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          menuToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+        });
+      });
+
+      /* === HEADER SCROLL SHADOW === */
+      const header = document.getElementById('header');
+      window.addEventListener('scroll', () => {
+        header.classList.toggle('scrolled', window.scrollY > 20);
+      });
+
+      /* === SCROLL TO TOP === */
+      const scrollTop = document.getElementById('scrollTop');
+      window.addEventListener('scroll', () => {
+        scrollTop.classList.toggle('visible', window.scrollY > 400);
+      });
+
+      scrollTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      /* === SCROLL ANIMATIONS (Fade-in) === */
+      const fadeElements = document.querySelectorAll('.fade-in');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      fadeElements.forEach(el => observer.observe(el));
+
+      /* === DATE INPUT: set min to tomorrow === */
+      const dateInput = document.getElementById('data');
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dateInput.min = tomorrow.toISOString().split('T')[0];
+
+      /* === FORM VALIDATION === */
+      const form = document.getElementById('bookingForm');
+      const formContainer = document.getElementById('formContainer');
+      const formSuccess = document.getElementById('formSuccess');
+      const btnSubmit = document.getElementById('btnSubmit');
+
+      const fields = {
+        nome: { el: document.getElementById('nome'), error: document.getElementById('nomeError'), validate: v => v.trim().length >= 2 },
+        telefone: { el: document.getElementById('telefone'), error: document.getElementById('telefoneError'), validate: v => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.trim()) },
+        email: { el: document.getElementById('email'), error: document.getElementById('emailError'), validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+        endereco: { el: document.getElementById('endereco'), error: document.getElementById('enderecoError'), validate: v => v.trim().length >= 5 },
+        imovel: { el: document.getElementById('imovel'), error: document.getElementById('imovelError'), validate: v => v !== '' },
+        servico: { el: document.getElementById('servico'), error: document.getElementById('servicoError'), validate: v => v !== '' },
+        comodos: { el: document.getElementById('comodos'), error: document.getElementById('comodosError'), validate: v => parseInt(v) > 0 && parseInt(v) <= 50 },
+        data: { el: document.getElementById('data'), error: document.getElementById('dataError'), validate: v => {
+          if (!v) return false;
+          const d = new Date(v + 'T12:00:00');
+          const min = new Date(tomorrow.toISOString().split('T')[0] + 'T12:00:00');
+          return d >= min;
+        }}
+      };
+
+      function validateField(key) {
+        const field = fields[key];
+        const valid = field.validate(field.el.value);
+        field.el.classList.toggle('error', !valid);
+        field.error.classList.toggle('show', !valid);
+        return valid;
+      }
+
+      Object.keys(fields).forEach(key => {
+        const field = fields[key];
+        field.el.addEventListener('blur', () => validateField(key));
+        field.el.addEventListener('input', () => {
+          if (field.el.classList.contains('error')) {
+            validateField(key);
+          }
+        });
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let allValid = true;
+        Object.keys(fields).forEach(key => {
+          if (!validateField(key)) allValid = false;
+        });
+
+        if (!allValid) return;
+
+        btnSubmit.classList.add('loading');
+        btnSubmit.disabled = true;
+
+        const formData = {
+          nome: fields.nome.el.value.trim(),
+          telefone: fields.telefone.el.value.trim(),
+          email: fields.email.el.value.trim(),
+          endereco: fields.endereco.el.value.trim(),
+          imovel: fields.imovel.el.value,
+          servico: fields.servico.el.value,
+          comodos: fields.comodos.el.value,
+          data: fields.data.el.value,
+          horario: document.querySelector('input[name="horario"]:checked').value,
+          materiais: document.querySelector('input[name="materiais"]:checked').value,
+          mensagem: document.getElementById('mensagem').value.trim()
+        };
+
+        console.log('Dados do agendamento:', formData);
+
+        setTimeout(() => {
+          btnSubmit.classList.remove('loading');
+          btnSubmit.disabled = false;
+          formContainer.style.display = 'none';
+          formSuccess.classList.add('show');
+        }, 1500);
+      });
+
+      /* === ACTIVE NAV LINK ON SCROLL === */
+      const sections = document.querySelectorAll('section[id]');
+      const navAnchors = document.querySelectorAll('.nav-links a:not(.btn-nav)');
+
+      window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+          const top = section.offsetTop - 200;
+          if (window.scrollY >= top) {
+            current = section.getAttribute('id');
+          }
+        });
+        navAnchors.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+        });
+      });
+
+      /* === PHONE MASK === */
+      const telInput = document.getElementById('telefone');
+      telInput.addEventListener('input', () => {
+        let v = telInput.value.replace(/\D/g, '').slice(0, 11);
+        if (v.length > 2) {
+          v = '(' + v.slice(0, 2) + ') ' + v.slice(2);
+        }
+        if (v.length > 10) {
+          v = v.slice(0, 10) + '-' + v.slice(10);
+        } else if (v.length > 9) {
+          v = v.slice(0, 9) + '-' + v.slice(9);
+        }
+        telInput.value = v;
+      });
+    });
+  </script>
+</body>
+</html>
